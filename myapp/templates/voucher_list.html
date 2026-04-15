@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h4>Voucher List</h4>
+
+<a href="/voucher/" class="btn btn-success mb-3">
+    + New Voucher
+</a>
+
+<table class="table table-bordered text-center">
+
+<tr class="table-light">
+    <th>Voucher No</th>
+    <th>Date</th>
+    <th>Remarks</th>
+    <th>Amount</th>
+    <th>Actions</th>
+</tr>
+
+{% for v in vouchers %}
+<tr>
+    <td>{{ v.voucher_no }}</td>
+    <td>{{ v.voucher_date }}</td>
+    <td>{{ v.remarks }}</td>
+    <td>{{ v.total_a }} / {{ v.total_b }}</td>
+
+    <td>
+        <div class="dropdown">
+            <button class="btn btn-warning btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                Action
+            </button>
+
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="dropdown-item" href="/voucher/?edit={{ v.id }}">
+                        Edit
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item text-warning" href="/mark_deleted/{{ v.id }}/">
+                        Mark Deleted
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item text-danger" href="/delete_voucher/{{ v.id }}/">
+                        Delete
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </td>
+
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}

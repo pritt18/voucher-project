@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body { margin: 0; }
+
+        a { text-decoration: none; }
+
+        .sidebar {
+            width: 230px;
+            background: #dcdcdc;
+            padding: 15px;
+            min-height: 100vh;
+        }
+
+        .sidebar-link {
+            color: black;
+            display: block;
+            padding: 6px;
+            border-radius: 5px;
+        }
+
+        .sidebar-link:hover {
+            background: #bfbfbf;
+        }
+
+        .active-link {
+            font-weight: bold;
+            color: #0d6efd !important;
+        }
+
+        .menu-title {
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .header {
+            background: #ddd;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="d-flex">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+        <h6>Settings</h6>
+
+        <!-- Alpha Group -->
+        <div class="menu-title d-flex justify-content-between align-items-center">
+            <a href="{% url 'alphagroup' %}" class="text-dark">Alpha Group</a>
+            <span onclick="toggleMenu('alphaMenu')">▶</span>
+        </div>
+
+        <!-- Dynamic Categories -->
+        <div id="alphaMenu" style="margin-left:10px;">
+    {% for cat in categories %}
+        <a href="{% url 'alphagroup' %}?category={{ cat.id }}"
+           class="sidebar-link
+           {% if request.GET.category == cat.id|stringformat:'s' %}active-link{% endif %}">
+           
+           Alpha Sub Group {{ forloop.counter }}
+        </a>
+    {% endfor %}
+</div>
+
+        <!-- Section 1 -->
+        <div class="menu-title" onclick="toggleMenu('section1')">
+            ▶ Section 1
+        </div>
+
+        <div id="section1">
+    <a href="/voucher_list/" class="sidebar-link">Sub Section A</a>
+    <a href="/voucher_list/" class="sidebar-link">Sub Section B</a>
+    <a href="/voucher_list/" class="sidebar-link">Sub Section C</a>
+</div>
+
+        <!-- Section 2 -->
+        <div class="menu-title" onclick="toggleMenu('section2')">
+            ▶ Section 2
+        </div>
+
+        <div id="section2">
+    <a href="/voucher_list/" class="sidebar-link">Sub Section A</a>
+    <a href="/voucher_list/" class="sidebar-link">Sub Section B</a>
+    <a href="/voucher_list/" class="sidebar-link">Sub Section C</a>
+</div>
+
+        <!-- Section 3 -->
+        <div class="menu-title" onclick="toggleMenu('section3')">
+            ▶ Section 3
+        </div>
+
+        <div id="section3">
+    <a href="/voucher_list/" class="sidebar-link">Sub Section A</a>
+    <a href="/voucher_list/" class="sidebar-link">Sub Section B</a>
+    <a href="/voucher_list/" class="sidebar-link">Sub Section C</a>
+</div>
+
+    </div>
+
+    <!-- Right Side -->
+    <div style="flex:1;">
+
+        <!-- Header -->
+        <div class="header">
+            ABCD
+        </div>
+
+        <!-- Main Content -->
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+
+    </div>
+
+</div>
+
+
+  </div>
+</div>
+  </div>
+</div>
+
+<!-- JS -->
+<script>
+function toggleMenu(id) {
+    let menu = document.getElementById(id);
+
+    if (menu.style.display === "none") {
+        menu.style.display = "block";
+        localStorage.setItem(id, "open");
+    } else {
+        menu.style.display = "none";
+        localStorage.setItem(id, "closed");
+    }
+}
+
+window.onload = function() {
+    let menus = ["alphaMenu", "section1", "section2", "section3"];
+
+    menus.forEach(id => {
+        let state = localStorage.getItem(id);
+        let menu = document.getElementById(id);
+
+        if (state === "closed") {
+            menu.style.display = "none";
+        } else {
+            menu.style.display = "block";
+        }
+    });
+};
+</script>
+
+</body>
+</html>

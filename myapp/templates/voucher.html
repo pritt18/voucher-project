@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h4>Voucher Entry</h4>
+
+<form method="POST" class="card p-3">
+{% csrf_token %}
+<input type="hidden" name="voucher_id" value="{{ edit_data.id }}">
+<!-- Header -->
+<div class="row mb-2">
+    <div class="col">
+        <label>Voucher No</label>
+        <input type="text" name="voucher_no"
+       value="{{ edit_data.voucher_no|default:'' }}"
+       class="form-control" required>
+    </div>
+
+    <div class="col">
+        <label>Voucher Date</label>
+        <input type="date" name="voucher_date"
+       value="{{ edit_data.voucher_date|date:'Y-m-d' }}"
+       class="form-control" required>
+    </div>
+</div>
+
+<div class="mb-2">
+    <label>Remarks</label>
+    <input type="text" name="remarks"
+       value="{{ edit_data.remarks|default:'' }}"
+       class="form-control">
+</div>
+
+<!-- TABLE -->
+<table class="table table-bordered text-center">
+<thead class="table-light">
+<tr>
+    <th>Type</th>
+    <th>Alpha Group</th>
+    <th>A</th>
+    <th>B</th>
+    <th>Action</th>
+</tr>
+</thead>
+
+<tbody id="rows">
+
+<tr>
+    <!-- TYPE -->
+    <td>
+        <select name="type[]" class="form-control" onchange="toggleRow(this)">
+            <option value="A">A</option>
+            <option value="B">B</option>
+        </select>
+    </td>
+
+    <!-- GROUP -->
+    <td>
+        <select name="group[]" class="form-control">
+            {% for g in groups %}
+                <option value="{{ g.id }}">{{ g.name }}</option>
+            {% endfor %}
+        </select>
+    </td>
+
+    <!-- A -->
+    <td>
+        <input type="number" name="amount_a[]" class="form-control" onkeyup="calcTotal()">
+    </td>
+
+    <!-- B -->
+    <td>
+        <input type="number" name="amount_b[]" class="form-control" onkeyup="calcTotal()">
+    </td>
+
+    <!-- ACTION -->
+    <td>
+        <button type="button" class="btn btn-success btn-sm" onclick="addRow()">+</button>
+        <button type="button" class="btn btn-danger btn-sm" onclick="deleteRow(this)">X</button>
+    </td>
+</tr>
+
+</tbody>
+</table>
+
+<!-- TOTAL -->
+<div class="row">
+    <div class="col">
+        <label>Total A</label>
+        <input type="text" id="totalA" class="form-control" readonly value="0">
+    </div>
+
+    <div class="col">
+        <label>Total B</label>
+        <input type="text" id="totalB" class="form-control" readonly value="0">
+    </div>
+</div>
+
+<br>
+
+<button class="btn btn-success w-100">Save Voucher</button>
+
+</form>
+<a href="/voucher_list/" class="btn btn-secondary mb-3">
+    View Voucher List
+</a>
+<!-- JS -->
+<script>
+
+function addRow() {
+    let table = document.getElementById("rows");
+    let row = table.rows[0].cloneNode(true);
+
+    row.querySelectorAll("input").forEach(i => {
+        i.value = "";
+        i.disabled = false;
+    });
+
+    table.appendChild(row);
+}
+
+function deleteRow(btn) {
+    let row = btn.parentElement.parentElement;
+    let table = document.getElementById("rows");
+
+    if (table.rows.length > 1) {
+        row.remove();
+        calcTotal();
+    }
+}
+
+function toggleRow(select) {
+    let row = select.parentElement.parentElement;
+    let type = select.value;
+
+    let a = row.cells[2].querySelector("input");
+    let b = row.cells[3].querySelector("input");
+
+    if (type === "A") {
+        a.disabled = false;
+        b.disabled = true;
+        b.value = "";
+    } else {
+        a.disabled = true;
+        b.disabled = false;
+        a.value = "";
+    }
+}
+
+function calcTotal() {
+    let totalA = 0;
+    let totalB = 0;
+
+    document.querySelectorAll("input[name='amount_a[]']").forEach(i => {
+        totalA += parseFloat(i.value) || 0;
+    });
+
+    document.querySelectorAll("input[name='amount_b[]']").forEach(i => {
+        totalB += parseFloat(i.value) || 0;
+    });
+
+    document.getElementById("totalA").value = totalA;
+    document.getElementById("totalB").value = totalB;
+}
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Edit Group</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <input type="text" name="name" value="{{ group.name }}" class="form-control mb-2">
+    <input type="text" name="display_name" value="{{ group.display_name }}" class="form-control mb-2">
+
+    <select name="category" class="form-control mb-2">
+        {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if cat.id == group.category.id %}selected{% endif %}>
+                {{ cat.name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button class="btn btn-success">Update</button>
+</form>
+
+{% endblock %}
